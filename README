@@ -1,0 +1,38 @@
+glamor
+Open-source X.org graphics common driver based on GL library.
+
+What is glamor
+------------------------
+The glamor module is an open-source 2D graphics common driver for
+the X Window System as implemented by X.org. It supports a variety of
+graphics chipsets which have OpenGL/EGL/GBM supports.
+
+Where to get more information about the driver
+----------------------------------------------
+
+	TBD.
+
+Documentation specific to the glamor common module including
+possible configuration options for the xorg.conf file can be found in
+the glamor(4) manual page. After installing the module this
+documentation can be read with the following command:
+
+	man glamor
+
+Mailing list for communication with users and developers of
+glamor:
+
+	TBD
+
+	Note: Subscription is required before posting, but anyone is
+	free to subscribe. See instructions (and archives) here:
+
+	http://lists.freedesktop.org/mailman/listinfo/glamor
+
+To report bugs encountered with the driver, see:
+
+	TBD.
+
+To see bugs that are targeted to be fixed in the next release:
+
+	TBD.

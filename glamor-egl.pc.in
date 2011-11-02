@@ -1,0 +1,14 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+moduledir=@moduledir@
+sdkdir=@sdkdir@
+GLAMOR_GL_CFLAGS=@GLAMOR_GL_CFLAGS@
+GLAMOR_EGL_CFLAGS=@GLAMOR_EGL_CFLAGS@ @GLAMOR_EGL_LIBS@
+
+Name: glamor-egl
+Description: X.Org glamor common library.
+Version: @PACKAGE_VERSION@
+Cflags: -I${sdkdir} -L${moduledir} ${GLAMOR_GL_CFLAGS} ${GLAMOR_EGL_CFLAGS}
+
