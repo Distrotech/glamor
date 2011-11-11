@@ -3,9 +3,78 @@ Open-source X.org graphics common driver based on GL library.
 
 What is glamor
 ------------------------
+
 The glamor module is an open-source 2D graphics common driver for
 the X Window System as implemented by X.org. It supports a variety of
 graphics chipsets which have OpenGL/EGL/GBM supports.
+
+It’s a GL-based rendering acceleration library for X server only:
+
+	It uses normal texture to represent a drawable pixmap 
+	if possible.
+	It calls GL functions to render to the texture directly.
+
+It consists of two packages:
+
+	glamor : Rendering library. All the rendering functions
+		 are implemented in this package. 
+	glamor-egl : EGL support library. This package provides 
+		     functions to create and initialize OpenGL/EGL context.  
+
+
+It’s somehow hardware independently. And could be a building 
+block of any X server’s DDX driver:
+
+        Xephyr or any other X-in-X server could use glamor to 
+	acclerate the rendering if the hostX has glx support.
+        Xorg’s DDX driver could leverage glamor-egl package to 
+	create a egl context without any native X system. This 
+	package can support every platform which has OpenGL and 
+	gbm and drm libraries.
+
+
+Why glamor
+----------------------------------------------
+Basiclly, two intentions come to my mind of why we want to 
+develop glamor.
+
+1. Graphic device has powerful 3D capability. To use 3D function 
+to accelerate 2D rendering is possible and many drivers already 
+do so.  OpenGL provides a more convenient and standard interface 
+to leverage GFX device’s 3D power. It would be better to call 
+OpenGL directly rather than manually write 3D pipeline control 
+code for each different GFX device.   
+
+2. We have heard of complains about why we need to develop two 
+version drivers for a single graphic device for a long time. 
+One is for mesa’s DRI driver and the other is for 2D DDX driver. 
+One of glamor’s purpose is to eliminate the latter one. 
+
+How glamor works
+----------------------------------------------
+One prerequisite is that Xorg’s upper layer never access a 
+drawable directly. It always use low level DDX functions to 
+handle rendering.
+
+All DDX functions access those drawables through two methods:
+First method is to use DRM to map the drawable to a virtual 
+memory buffer, and then use  libfb to access it directly. 
+In many cases, this way is the fallback path.
+Second method is to setup appropriate 2D or 3D pipeline 
+according to the rendering request. Normally, it will prepare 
+a serial of hardware dependent command, and then upload the 
+command to the GFX device through DRM interface.
+
+Glamor just providess the third access method:
+Each pixmap has a normal texture object. Bind the texture 
+object to a frame buffer object.  Writing shaders according 
+to the rendering type and then call GL functions to render 
+to the texture directly.
+
+Eventually, the DRI driver in the openGL implementation (mesa) 
+will setup appropriate 2D or 3D pipeline to perform the rendering 
+operation. Functionally, it should be identical to the normal 
+2D driver.
 
 Where to get more information about the driver
 ----------------------------------------------
