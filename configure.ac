@@ -98,7 +98,7 @@ PKG_CHECK_MODULES(EGL, $LIBEGL, [EGL=yes], [EGL=no])
 AM_CONDITIONAL([EGL], [test "x$EGL" = xyes])
 
 if test "x$EGL = xyes"; then
-   PKG_CHECK_MODULES(EGL, $LIBGBM)
+   PKG_CHECK_MODULES(GBM, $LIBGBM)
 fi
 
 
