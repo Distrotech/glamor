@@ -5,7 +5,7 @@ includedir=@includedir@
 moduledir=@moduledir@
 sdkdir=@sdkdir@
 GLAMOR_GL_CFLAGS=@GLAMOR_GL_CFLAGS@
-GLAMOR_EGL_CFLAGS=@GLAMOR_EGL_CFLAGS@ @GLAMOR_EGL_LIBS@
+GLAMOR_EGL_CFLAGS=@EGL_CFLAGS@ @EGL_LIBS@
 
 Name: glamor-egl
 Description: X.Org glamor common library.
