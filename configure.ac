@@ -38,13 +38,14 @@ AM_MAINTAINER_MODE
 
 # Initialize libtool
 AC_PROG_LIBTOOL
+LT_PREREQ([2.2])
+LT_INIT([disable-static])
 
 # Initialize X.Org macros 1.8 or later for MAN_SUBSTS set by XORG_MANPAGE_SECTIONS
 m4_ifndef([XORG_MACROS_VERSION], 
           [m4_fatal([must install xorg-macros 1.8 or later before running autoconf/autogen])])
 XORG_MACROS_VERSION(1.8)
 XORG_DEFAULT_OPTIONS
-
 
 # Checks for programs.
 # AC_PROG_LN_S
@@ -77,6 +78,10 @@ AC_SUBST([moduledir])
 sdkdir=`$PKG_CONFIG --variable=sdkdir xorg-server`
 AC_SUBST([sdkdir])
 
+AC_MSG_CHECKING([whether to include GLAMOR_GLES2 support])
+AC_ARG_ENABLE(glamor-gles2,         AS_HELP_STRING([--enable-glamor-gles2], [Build glamor based on gles2 (default: no)]), [GLAMOR_GLES2="$enableval"], [GLAMOR_GLES2=no])
+AC_MSG_RESULT([$GLAMOR_GLES2])
+
 AM_CONDITIONAL([GLAMOR_GLES2], [test "x$GLAMOR_GLES2" = xyes])
 
 if test "x$GLAMOR_GLES2" = xyes; then
@@ -100,9 +105,6 @@ AM_CONDITIONAL([EGL], [test "x$EGL" = xyes])
 if test "x$EGL = xyes"; then
    PKG_CHECK_MODULES(GBM, $LIBGBM)
 fi
-
-
-AC_ARG_ENABLE(glamor-gles2,         AS_HELP_STRING([--enable-glamor-gles2], [Build glamor based on gles2 (default: no)]), [GLAMOR_GLES2=$enableval], [GLAMOR_GLES2=no])
 
 AC_OUTPUT([Makefile
            glamor-egl.pc
