@@ -24,7 +24,7 @@
 # Initialize Autoconf
 AC_PREREQ([2.63])
 AC_INIT([glamor-egl], 
-        [1.0.0],
+        [0.2.0],
         [https://bugs.freedesktop.org/enter_bug.cgi?product=glamor], 
         [glamor-egl])
 
