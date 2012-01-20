@@ -103,7 +103,10 @@ PKG_CHECK_MODULES(EGL, $LIBEGL, [EGL=yes], [EGL=no])
 AM_CONDITIONAL([EGL], [test "x$EGL" = xyes])
 
 if test "x$EGL = xyes"; then
-   PKG_CHECK_MODULES(GBM, $LIBGBM)
+   PKG_CHECK_MODULES(GBM, $LIBGBM, [GBM=yes], [GBM=no])
+   if test "x$GBM" = xyes; then
+     AC_DEFINE(GLAMOR_HAS_GBM, 1, [Use GBM.])
+   fi
 fi
 
 AC_OUTPUT([Makefile
