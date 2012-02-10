@@ -106,8 +106,62 @@ if test "x$EGL = xyes"; then
    PKG_CHECK_MODULES(GBM, $LIBGBM, [GBM=yes], [GBM=no])
    if test "x$GBM" = xyes; then
      AC_DEFINE(GLAMOR_HAS_GBM, 1, [Use GBM.])
+     AC_DEFINE(GLX_USE_SHARED_DISPATCH, 1, [GLX and GLAMOR share the glapi dispatch table.])
    fi
 fi
+
+dnl
+dnl TLS detection
+dnl
+AC_MSG_CHECKING(for thread local storage (TLS) support)
+AC_CACHE_VAL(ac_cv_tls, [
+    ac_cv_tls=none
+    keywords="__thread __declspec(thread)"
+    for kw in $keywords ; do
+        AC_TRY_COMPILE([int $kw test;], [], ac_cv_tls=$kw)
+    done
+])
+AC_MSG_RESULT($ac_cv_tls)
+
+if test "$ac_cv_tls" != "none"; then
+    AC_MSG_CHECKING(for tls_model attribute support)
+    AC_CACHE_VAL(ac_cv_tls_model, [
+        save_CFLAGS="$CFLAGS"
+        CFLAGS="$CFLAGS $STRICT_CFLAGS"
+        AC_TRY_COMPILE([int $ac_cv_tls __attribute__((tls_model("initial-exec"))) test;], [],
+                       ac_cv_tls_model=yes, ac_cv_tls_model=no)
+        CFLAGS="$save_CFLAGS"
+    ])
+    AC_MSG_RESULT($ac_cv_tls_model)
+
+    if test "x$ac_cv_tls_model" = "xyes" ; then
+        mesa_tls=$ac_cv_tls' __attribute__((tls_model("initial-exec")))'
+    else
+        mesa_tls=$ac_cv_tls
+    fi
+
+    AC_DEFINE_UNQUOTED([TLS], $mesa_tls, [The compiler supported TLS storage class, prefering initial-exec if tls_model is supported])
+fi
+
+AC_ARG_ENABLE([glx-tls],
+    [AS_HELP_STRING([--enable-glx-tls],
+        [enable TLS support in GLX @<:@default=disabled@:>@])],
+    [GLX_USE_TLS=$enableval
+     if test "x$GLX_USE_TLS" = "xyes" && test "${ac_cv_tls}" = "none" ; then
+        AC_MSG_ERROR([GLX with TLS support requested, but the compiler does not support it.])
+     fi],
+    [GLX_USE_TLS=no
+     if test "${ac_cv_tls}" != "none" ; then
+        GLX_USE_TLS=yes
+     fi])
+AC_SUBST(GLX_TLS, ${GLX_USE_TLS})
+
+if test "x$GLX_USE_TLS" = xyes ; then
+        GLX_DEFINES="-DGLX_USE_TLS -DPTHREADS"
+        GLX_SYS_LIBS="$GLX_SYS_LIBS -lpthread"
+fi
+AC_SUBST([GLX_DEFINES])
+AC_SUBST([GLX_SYS_LIBS])
 
 AC_OUTPUT([Makefile
            glamor-egl.pc
