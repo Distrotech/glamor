@@ -73,6 +73,16 @@ AC_ARG_WITH(xorg-module-dir,
 
 AC_SUBST([moduledir])
 
+# Define a configure option for an alternate X Server configuration directory
+sysconfigdir=`$PKG_CONFIG --variable=sysconfigdir xorg-server`
+AC_ARG_WITH(xorg-conf-dir,
+            AC_HELP_STRING([--with-xorg-conf-dir=DIR],
+                           [Default xorg.conf.d directory [[default=from $PKG_CONFIG xorg-server]]]),
+            [configdir="$withval"],
+            [configdir="$sysconfigdir"])
+AC_SUBST(configdir)
+AM_CONDITIONAL(HAS_XORG_CONF_DIR, [test "x$sysconfigdir" != "x"])
+
 # X Server SDK location is required to install evdev header files
 # This location is also relayed in the xorg-evdev.pc file
 sdkdir=`$PKG_CONFIG --variable=sdkdir xorg-server`
@@ -166,4 +176,5 @@ AC_SUBST([GLX_SYS_LIBS])
 AC_OUTPUT([Makefile
            glamor-egl.pc
            glamor.pc
-           src/Makefile])
+           src/Makefile
+	   conf/Makefile])

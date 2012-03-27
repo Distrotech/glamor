@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS=nostdinc
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = src
+SUBDIRS = src conf
 
 aclocaldir = $(datadir)/aclocal
 
@@ -25,7 +25,7 @@ ChangeLog:
 
 dist-hook: ChangeLog INSTALL
 
-DIST_SUBDIRS = src 
+DIST_SUBDIRS = src conf
 
 # gross hack
 relink: all
