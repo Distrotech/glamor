@@ -1,0 +1,76 @@
+= What's New =
+
+The latest version is 0.4. Here is the new features in this releae:
+ 1. DRI2 now works well, and texture-from-pixmap also works well.
+ 2. Fully support glx including AIGLX, indirect glx's GL context
+    coexists with glamor's GL context safely. Thanks for Chris
+    Wilson's help to refine this function.
+ 3. Optimize most of the fallback path and avoid whole pixmap 
+    downloading/uploading as much as possible.
+ 4. 1BPP picture uploading now will not fallback the whole rendering
+    path.
+ 5. Fully support all color formats for GLES2 port. Thanks for
+    Lipeng's contribution and testing for the GLES2 port on
+    PVR545 platform. And thanks Zhengyu to fix some PVR releated problems.
+ 6. Fixed many of the bugs for cairo-test-suite, now we get almost
+    identical or even better result than UXA.
+ 7. Implemented a fbo/texture cache pool mechanism which will reduce
+    the over head of texture/fbo destruction and creation, and bring
+    overall 15-20% performance imprvoement. On PVR545 platform, we
+    even get about 10x performance improvement with this feature.
+
+= How to Enable Glamor? =
+To enable the Glamor, the following steps is needed:
+
+ 1. Rebuild the mesa using the parameter:
+    --with-egl-platforms=x11,drm --with-gallium-drivers=  --enable-gbm --enable-shared-glapi --enable-glx-tls
+ 2. Rebuild the xf86-video-intel driver, add parameter
+    --enable-glamor
+    to enable glamor module which is embedded in intel driver.
+ 3. Build and install glamor source.
+ 4. Make sure you have the xorg configure file named glamor.conf
+    at conf/glamor.conf under the directory
+    /usr/share/X11/xorg.conf.d or /etc/X11/xorg.conf.d/. 
+    Although make install will try to install that file to the correct
+    directory. But it may failed, as if you are installing the xserver
+    to a local directory, then the "make install" will install
+    glamor.conf to your local directory rather than the two system
+    directories. So you may need to manually copy the file to the system's 
+    configuration directory. Otherwise, you will encounter segfault when
+    start the xserver. Here is teh content of the glamor.conf.
+
+  . Section "Module"
+  . Load "dri2" 
+  . Load "glamoregl"
+  . EndSection
+
+The reason why we need to load dri2/glamoregl earlier is both glx-xserver
+and glamor are a dri2 loader. And glx-xserver side has a own glapi/dispatch table 
+implementation which is a subset of the standard mesa's implementation. So if
+the glx module is loaded earlier than dri2/glamoregl, then we will get an incomplete 
+dispatch table and everything is broken in glamor then. This is also why we need to
+add --enable-glx-tls parameters when build mesa, as we need to keep mesa align 
+with Xserver's behavious, xserver will enable-glx-tls by default, but mesa will not.
+
+After yuo finish all the above steps, then you can try to start x with glamor enabled
+DDX. To make sure it's the glamor running, you can refer to Xorg.0.log, and 
+check that the Glamor is enabled if you can find the log like:
+ ''__intel(0): Use GLAMOR acceleration.__''
+
+= Plan =
+
+We plan to release next version 0.5 at early of June. And the following major features will be added:
+ 1. Fully gradient optimization including linear and radial. Actually, 
+    the code is already in this release, but as it has some bugs and
+    we disable it currently. Will fix those bug and enable it at next
+    release.
+ 2. Large pixmap support. Currently, mesa only support 8Kx8K texture
+    size, if a pixmap has larger size, we have to store it in main
+    memory and is not efficient. This feature will tile a large
+    pixmap to a texture array.
+ 3. Fully trapezoid optimization. Currently, the trapezoid rendering
+    is not optimized, and it will call pixman to do the rasterization
+    and then call glamor_composite to do the following composition,
+    and then many texture uploading overhead is triggered there.
+ 4. Fine tune the fbo cache mechanism.
+

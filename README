@@ -25,13 +25,13 @@ It consists of two packages:
 It’s somehow hardware independently. And could be a building 
 block of any X server’s DDX driver:
 
-        Xephyr or any other X-in-X server could use glamor to 
-	acclerate the rendering if the hostX has glx support.
         Xorg’s DDX driver could leverage glamor-egl package to 
-	create a egl context without any native X system. This 
+	create an egl context without any native X system. This 
 	package can support every platform which has OpenGL and 
 	gbm and drm libraries.
-
+	Now the xf86-intel-video driver uses glamor as one of its
+	option. When you build it with --enable-glamor, then it
+	will use glamor as its rendering enginee.
 
 Why glamor
 ----------------------------------------------
@@ -73,25 +73,15 @@ to the texture directly.
 
 Eventually, the DRI driver in the openGL implementation (mesa) 
 will setup appropriate 2D or 3D pipeline to perform the rendering 
-operation. Functionally, it should be identical to the normal 
-2D driver.
+operation. Functionally, it should be functional identical to
+the normal 2D driver.
 
 Where to get more information about the driver
 ----------------------------------------------
-
-	TBD.
-
-Documentation specific to the glamor common module including
-possible configuration options for the xorg.conf file can be found in
-the glamor(4) manual page. After installing the module this
-documentation can be read with the following command:
-
-	man glamor
+	http://www.freedesktop.org/wiki/Software/Glamor
 
 Mailing list for communication with users and developers of
 glamor:
-
-	TBD
 
 	Note: Subscription is required before posting, but anyone is
 	free to subscribe. See instructions (and archives) here:
