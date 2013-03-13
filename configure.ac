@@ -37,7 +37,6 @@ AM_INIT_AUTOMAKE([foreign dist-bzip2])
 AM_MAINTAINER_MODE([enable])
 
 # Initialize libtool
-AC_PROG_LIBTOOL
 LT_PREREQ([2.2])
 LT_INIT([disable-static])
 
