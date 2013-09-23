@@ -95,7 +95,10 @@ AC_MSG_CHECKING([whether to enable DEBUG])
 AC_ARG_ENABLE(debug,         AS_HELP_STRING([--enable-debug], [Build debug version glamor (default: no)]), [DEBUG="$enableval"], [DEBUG=no])
 AC_MSG_RESULT([$DEBUG])
 
-AM_CONDITIONAL([GLAMOR_GLES2], [test "x$GLAMOR_GLES2" = xyes])
+AC_MSG_CHECKING([whether to include GLAMOR Xv support])
+AC_ARG_ENABLE(xv,         AS_HELP_STRING([--enable-xv], [Build glamor Xv (default: no)]), [GLAMOR_XV="$enableval"], [GLAMOR_XV=no])
+AC_MSG_RESULT([$GLAMOR_XV])
+AM_CONDITIONAL([GLAMOR_XV], [test "x$GLAMOR_XV" = xyes])
 
 if test "x$DEBUG" = xyes; then
    AC_DEFINE(DEBUG, 1, [Enable DEBUG])
@@ -114,6 +117,11 @@ else
 fi
 
 AC_SUBST([GLAMOR_GL_CFLAGS])
+
+AM_CONDITIONAL([GLAMOR_GLES2], [test "x$GLAMOR_GLES2" = xyes])
+if test "x$GLAMOR_XV" = xyes; then
+   AC_DEFINE(GLAMOR_XV,1,[Build Xv support])
+fi
 
 PKG_CHECK_MODULES([LIBDRM], $LIBDRM)
 PKG_CHECK_MODULES(EGL, $LIBEGL, [EGL=yes], [EGL=no])
