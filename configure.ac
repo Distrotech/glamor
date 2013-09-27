@@ -91,15 +91,14 @@ AC_MSG_CHECKING([whether to include GLAMOR_GLES2 support])
 AC_ARG_ENABLE(glamor-gles2,         AS_HELP_STRING([--enable-glamor-gles2], [Build glamor based on gles2 (default: no)]), [GLAMOR_GLES2="$enableval"], [GLAMOR_GLES2=no])
 AC_MSG_RESULT([$GLAMOR_GLES2])
 
+AC_MSG_CHECKING([whether to include GLAMOR Xv support])
+AC_ARG_ENABLE(xv,         AS_HELP_STRING([--disable-xv], [Disable glamor Xv (default: enabled)]), [GLAMOR_XV="$enableval"], [GLAMOR_XV=yes])
+AC_MSG_RESULT([$GLAMOR_XV])
+AM_CONDITIONAL([GLAMOR_XV], [test "x$GLAMOR_XV" != xno])
+
 AC_MSG_CHECKING([whether to enable DEBUG])
 AC_ARG_ENABLE(debug,         AS_HELP_STRING([--enable-debug], [Build debug version glamor (default: no)]), [DEBUG="$enableval"], [DEBUG=no])
 AC_MSG_RESULT([$DEBUG])
-
-AC_MSG_CHECKING([whether to include GLAMOR Xv support])
-AC_ARG_ENABLE(xv,         AS_HELP_STRING([--enable-xv], [Build glamor Xv (default: no)]), [GLAMOR_XV="$enableval"], [GLAMOR_XV=no])
-AC_MSG_RESULT([$GLAMOR_XV])
-AM_CONDITIONAL([GLAMOR_XV], [test "x$GLAMOR_XV" = xyes])
-
 if test "x$DEBUG" = xyes; then
    AC_DEFINE(DEBUG, 1, [Enable DEBUG])
 fi
