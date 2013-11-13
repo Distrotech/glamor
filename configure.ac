@@ -187,8 +187,9 @@ fi
 AC_SUBST([GLX_DEFINES])
 AC_SUBST([GLX_SYS_LIBS])
 
-AC_OUTPUT([Makefile
+AC_CONFIG_FILES([Makefile
            glamor-egl.pc
            glamor.pc
            src/Makefile
 	   conf/Makefile])
+AC_OUTPUT
