@@ -134,6 +134,19 @@ if test "x$EGL = xyes"; then
    fi
 fi
 
+AC_MSG_CHECKING([Enable Glamor Dri3 helpers])
+AC_ARG_ENABLE(glamor-dri3, AS_HELP_STRING([--enable-glamor-dri3], [Build glamor Dri3 helpers (default: yes if gbm is detected)]), [GLAMOR_DRI3_HELPERS="$enableval"], [GLAMOR_DRI3_HELPERS=yes])
+
+if test "x$GLAMOR_DRI3_HELPERS" = xyes -a "x$GLAMOR_HAS_GBM" = xno; then
+   GLAMOR_DRI3_HELPERS=no
+fi
+
+AC_MSG_RESULT([$GLAMOR_DRI3_HELPERS])
+
+if test "x$GLAMOR_DRI3_HELPERS" = xyes; then
+    AC_DEFINE(GLAMOR_HAS_DRI3_SUPPORT, 1, [Enable Dri3 helpers])
+fi
+
 dnl
 dnl TLS detection
 dnl
