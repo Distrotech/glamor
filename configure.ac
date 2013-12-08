@@ -62,6 +62,7 @@ LIBPIXMAN="pixman-1 >= 0.21.8"
 LIBEGL="egl"
 LIBGLESV2="glesv2"
 LIBGBM="gbm"
+LIBGBMv9="gbm >= 9"
 
 # Define a configure option for an alternate input module directory
 AC_ARG_WITH(xorg-module-dir,
@@ -134,10 +135,12 @@ if test "x$EGL = xyes"; then
    fi
 fi
 
-AC_MSG_CHECKING([Enable Glamor Dri3 helpers])
-AC_ARG_ENABLE(glamor-dri3, AS_HELP_STRING([--enable-glamor-dri3], [Build glamor Dri3 helpers (default: yes if gbm is detected)]), [GLAMOR_DRI3_HELPERS="$enableval"], [GLAMOR_DRI3_HELPERS=yes])
+PKG_CHECK_MODULES(GBMv9, $LIBGBMv9, [GBMv9=yes], [GBMv9=no])
 
-if test "x$GLAMOR_DRI3_HELPERS" = xyes -a "x$GLAMOR_HAS_GBM" = xno; then
+AC_MSG_CHECKING([Enable Glamor Dri3 helpers])
+AC_ARG_ENABLE(glamor-dri3, AS_HELP_STRING([--enable-glamor-dri3], [Build glamor Dri3 helpers (default: yes if libgbm >= 9 is detected)]), [GLAMOR_DRI3_HELPERS="$enableval"], [GLAMOR_DRI3_HELPERS=yes])
+
+if test "x$GLAMOR_DRI3_HELPERS" = xyes -a "x$GBMv9" = xno; then
    GLAMOR_DRI3_HELPERS=no
 fi
 
