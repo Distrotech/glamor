@@ -23,9 +23,9 @@
 
 # Initialize Autoconf
 AC_PREREQ([2.63])
-AC_INIT([glamor-egl], 
+AC_INIT([glamor-egl],
         [0.5.1],
-        [https://bugs.freedesktop.org/enter_bug.cgi?product=glamor], 
+        [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
         [glamor-egl])
 
 AC_CONFIG_SRCDIR([Makefile.am])
