@@ -22,16 +22,16 @@ It consists of two packages:
 		     functions to create and initialize OpenGL/EGL context.  
 
 
-It’s somehow hardware independently. And could be a building 
+It’s somehow hardware independent. And could be a building
 block of any X server’s DDX driver:
 
         Xorg’s DDX driver could leverage glamor-egl package to 
 	create an egl context without any native X system. This 
 	package can support every platform which has OpenGL and 
 	gbm and drm libraries.
-	Now the xf86-intel-video driver uses glamor as one of its
+	Now the xf86-video-intel driver uses glamor as one of its
 	option. When you build it with --enable-glamor, then it
-	will use glamor as its rendering enginee.
+	will use glamor as its rendering engine.
 
 Why glamor
 ----------------------------------------------
@@ -65,7 +65,7 @@ according to the rendering request. Normally, it will prepare
 a serial of hardware dependent command, and then upload the 
 command to the GFX device through DRM interface.
 
-Glamor just providess the third access method:
+Glamor just provides the third access method:
 Each pixmap has a normal texture object. Bind the texture 
 object to a frame buffer object.  Writing shaders according 
 to the rendering type and then call GL functions to render 
@@ -78,20 +78,22 @@ the normal 2D driver.
 
 Where to get more information about the driver
 ----------------------------------------------
-	http://www.freedesktop.org/wiki/Software/Glamor
+Please submit bugs & patches to the Xorg bugzilla:
 
-Mailing list for communication with users and developers of
-glamor:
+        https://bugs.freedesktop.org/enter_bug.cgi?product=xorg
 
-	Note: Subscription is required before posting, but anyone is
-	free to subscribe. See instructions (and archives) here:
+All questions regarding this software should be directed at the
+glamor mailing list:
 
-	http://lists.freedesktop.org/mailman/listinfo/glamor
+        http://lists.freedesktop.org/mailman/listinfo/glamor
 
-To report bugs encountered with the driver, see:
+The master development code repository can be found at:
 
-	TBD.
+        git://anongit.freedesktop.org/git/xorg/driver/glamor
 
-To see bugs that are targeted to be fixed in the next release:
+        http://cgit.freedesktop.org/xorg/driver/glamor
 
-	TBD.
+For more information on the git code manager, see:
+
+        http://wiki.x.org/wiki/GitPage
+
