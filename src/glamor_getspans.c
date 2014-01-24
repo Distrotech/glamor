@@ -39,7 +39,6 @@ _glamor_get_spans(DrawablePtr drawable,
 	    glamor_get_pixmap_private(pixmap);
 	int i;
 	uint8_t *readpixels_dst = (uint8_t *) dst;
-	void *data;
 	int x_off, y_off;
 	Bool ret = FALSE;
 
@@ -48,10 +47,13 @@ _glamor_get_spans(DrawablePtr drawable,
 
 	glamor_get_drawable_deltas(drawable, pixmap, &x_off, &y_off);
 	for (i = 0; i < count; i++) {
-		data = glamor_download_sub_pixmap_to_cpu(pixmap, points[i].x + x_off,
-							 points[i].y + y_off, widths[i], 1,
-							 PixmapBytePad(widths[i], drawable->depth),
-							 readpixels_dst, 0, GLAMOR_ACCESS_RO);
+#ifdef DEBUG
+		void *data =
+#endif
+                glamor_download_sub_pixmap_to_cpu(pixmap, points[i].x + x_off,
+		 				  points[i].y + y_off, widths[i], 1,
+						  PixmapBytePad(widths[i], drawable->depth),
+						  readpixels_dst, 0, GLAMOR_ACCESS_RO);
 		assert(data == readpixels_dst);
 		readpixels_dst += PixmapBytePad(widths[i], drawable->depth);
 	}
