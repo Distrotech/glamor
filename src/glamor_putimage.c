@@ -300,13 +300,13 @@ _glamor_put_image(DrawablePtr drawable, GCPtr gc, int depth, int x, int y,
 		}
 
 		glamor_upload_sub_pixmap_to_texture(temp_pixmap, 0, 0, w, h,
-						    pixmap->devKind, bits, 0);
-
+	    		                            0, bits, 0);
 		glamor_copy_area(&temp_pixmap->drawable, drawable, gc, 0, 0, w, h, x, y);
 		glamor_destroy_pixmap(temp_pixmap);
-	} else
+	} else {
 		glamor_upload_sub_pixmap_to_texture(pixmap, x + drawable->x + x_off, y + drawable->y + y_off,
-						    w, h, PixmapBytePad(w, depth), bits, 0);
+	    		                            w, h, 0, bits, 0);
+	}
 	ret = TRUE;
 	goto done;
 

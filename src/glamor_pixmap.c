@@ -387,7 +387,7 @@ static void
 __glamor_upload_pixmap_to_texture(PixmapPtr pixmap, unsigned int *tex,
 				  GLenum format,
 				  GLenum type,
-				  int x, int y, int w, int h,
+				  int x, int y, int w, int h, int stride,
 				  void *bits, int pbo)
 {
 	glamor_screen_private *glamor_priv =
@@ -395,6 +395,12 @@ __glamor_upload_pixmap_to_texture(PixmapPtr pixmap, unsigned int *tex,
 	glamor_gl_dispatch *dispatch;
 	int non_sub = 0;
 	unsigned int iformat = 0;
+	int bpp = depth_for_type(type);
+	int alignment = bpp / 8;
+	if (stride == 0) {
+		alignment = 4;
+	}
+
 
 	dispatch = glamor_get_dispatch(glamor_priv);
 	if (*tex == 0) {
@@ -412,11 +418,13 @@ __glamor_upload_pixmap_to_texture(PixmapPtr pixmap, unsigned int *tex,
 				  GL_NEAREST);
 	dispatch->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
 				  GL_NEAREST);
-	dispatch->glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	dispatch->glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
 
 	if (bits == NULL)
 		dispatch->glBindBuffer(GL_PIXEL_UNPACK_BUFFER,
 				       pbo);
+
+	dispatch->glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / alignment);
 	if (non_sub)
 		dispatch->glTexImage2D(GL_TEXTURE_2D,
 				       0, iformat, w, h, 0,
@@ -427,6 +435,8 @@ __glamor_upload_pixmap_to_texture(PixmapPtr pixmap, unsigned int *tex,
 					  0, x, y, w, h,
 					  format, type,
 					  bits);
+
+	dispatch->glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
 	if (bits == NULL)
 		dispatch->glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
@@ -511,7 +521,7 @@ ready_to_upload:
 		assert(y + fbo_y_off + h <= pixmap_priv->base.fbo->height);
 		__glamor_upload_pixmap_to_texture(pixmap, &pixmap_priv->base.fbo->tex,
 						  format, type,
-						  x + fbo_x_off, y + fbo_y_off, w, h,
+						  x + fbo_x_off, y + fbo_y_off, w, h, stride,
 						  bits, pbo);
 		return TRUE;
 	}
@@ -542,7 +552,7 @@ ready_to_upload:
 	glamor_set_destination_pixmap_priv_nc(pixmap_priv);
 	__glamor_upload_pixmap_to_texture(pixmap, &tex,
 					  format, type,
-					  0, 0, w, h,
+					  0, 0, w, h, stride,
 					  bits, pbo);
 	dispatch->glActiveTexture(GL_TEXTURE0);
 	dispatch->glBindTexture(GL_TEXTURE_2D, tex);

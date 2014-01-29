@@ -880,6 +880,26 @@ format_for_depth(int depth)
 	}
 }
 
+static inline int
+depth_for_type(GLenum type)
+{
+	switch (type) {
+	case GL_UNSIGNED_BYTE:
+		return 8;
+	case GL_UNSIGNED_INT_8_8_8_8:
+	case GL_UNSIGNED_INT_8_8_8_8_REV:
+	case GL_UNSIGNED_INT_2_10_10_10_REV:
+		return 32;
+	case GL_UNSIGNED_SHORT_5_6_5:
+	case GL_UNSIGNED_SHORT_5_6_5_REV:
+	case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+	case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+		return 16;
+	default:
+		return 0;
+	}
+}
+
 static inline void
 gl_iformat_for_depth(int depth, GLenum * format)
 {
