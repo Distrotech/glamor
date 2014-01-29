@@ -157,31 +157,56 @@ glamor_copy_n_to_n_textured(DrawablePtr src,
 	glamor_pixmap_private *src_pixmap_priv;
 	glamor_pixmap_private *dst_pixmap_priv;
 	int src_x_off, src_y_off, dst_x_off, dst_y_off;
-	enum glamor_pixmap_status src_status = GLAMOR_NONE;
 	GLfloat dst_xscale, dst_yscale, src_xscale, src_yscale;
 
 	src_pixmap_priv = glamor_get_pixmap_private(src_pixmap);
 	dst_pixmap_priv = glamor_get_pixmap_private(dst_pixmap);
 
-	if (!src_pixmap_priv->base.gl_fbo) {
-#ifndef GLAMOR_PIXMAP_DYNAMIC_UPLOAD
-		glamor_delayed_fallback(dst->pScreen, "src has no fbo.\n");
-		return FALSE;
-#else
-		src_status = glamor_upload_pixmap_to_texture(src_pixmap);
-		if (src_status != GLAMOR_UPLOAD_DONE)
-			return FALSE;
+	glamor_get_drawable_deltas(src, src_pixmap, &src_x_off,
+					   &src_y_off);
+	glamor_get_drawable_deltas(dst, dst_pixmap, &dst_x_off,
+				   &dst_y_off);
 
-		src_pixmap_priv = glamor_get_pixmap_private(src_pixmap);
-#endif
+	if (!src_pixmap_priv->base.gl_fbo) {
+		/* Optimize when the source doesn't have an FBO, just upload
+		   the data directly to the dest FBO */
+		int src_stride = src_pixmap->devKind;
+		int bpp = src_pixmap->drawable.bitsPerPixel;
+		void *src_data = NULL;
+		if (src->bitsPerPixel != dst->bitsPerPixel) {
+			DEBUGF("Non-matching bpp\n");
+			return FALSE;
+		}
+		if (src->bitsPerPixel < 8) {
+			DEBUGF("bpp < 8\n");
+			return FALSE;
+		}
+		if (gc && !(gc->alu == GXcopy && glamor_pm_is_solid(src, gc->planemask))) {
+			DEBUGF("non gxcopy and solid\n");
+			return FALSE;
+		}
+		for (i = 0; i < nbox; i++) {
+			int x = box[i].x1 + dst_x_off;
+			int y = box[i].y1 + dst_y_off;
+			int w = box[i].x2 - box[i].x1;
+			int h = box[i].y2 - box[i].y1;
+			src_data = (char *)src_pixmap->devPrivate.ptr + (box[i].y1 + dy +
+								src_y_off) * src_stride +
+								(box[i].x1 + dx + src_x_off) * (bpp / 8);
+			if (!glamor_upload_sub_pixmap_to_texture(dst_pixmap,
+					x, y, w, h,
+					src_stride, src_data, 0)) {
+				ErrorF("Failed to upload the sub pixmap to dst\n");
+				return FALSE;
+			}
+		}
+		return TRUE;
 	}
 
 
 	pixmap_priv_get_dest_scale(dst_pixmap_priv, &dst_xscale, &dst_yscale);
 	pixmap_priv_get_scale(src_pixmap_priv, &src_xscale, &src_yscale);
 
-	glamor_get_drawable_deltas(dst, dst_pixmap, &dst_x_off,
-				   &dst_y_off);
 
 	dispatch = glamor_get_dispatch(glamor_priv);
 
@@ -192,10 +217,10 @@ glamor_copy_n_to_n_textured(DrawablePtr src,
 					vertices);
 	dispatch->glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
 
-	glamor_get_drawable_deltas(src, src_pixmap, &src_x_off,
-				   &src_y_off);
+
 	dx += src_x_off;
 	dy += src_y_off;
+
 
 	dispatch->glActiveTexture(GL_TEXTURE0);
 	dispatch->glBindTexture(GL_TEXTURE_2D,
@@ -335,7 +360,7 @@ __glamor_copy_n_to_n(DrawablePtr src,
 			      * 4 >
 			      src_pixmap->drawable.width *
 			      src_pixmap->drawable.height)
-		             || !(glamor_check_fbo_size(glamor_priv,
+				|| !(glamor_check_fbo_size(glamor_priv,
 					src_pixmap->drawable.width,
 					src_pixmap->drawable.height))))) {
 
