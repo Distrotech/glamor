@@ -9,8 +9,14 @@
 /* Build glamor over GLES2 */
 #undef GLAMOR_GLES2
 
+/* Enable Dri3 helpers */
+#undef GLAMOR_HAS_DRI3_SUPPORT
+
 /* Use GBM. */
 #undef GLAMOR_HAS_GBM
+
+/* Build Xv support */
+#undef GLAMOR_XV
 
 /* GLX and GLAMOR share the glapi dispatch table. */
 #undef GLX_USE_SHARED_DISPATCH
