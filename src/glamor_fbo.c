@@ -169,16 +169,17 @@ glamor_pixmap_fbo_cache_put(glamor_pixmap_fbo *fbo)
 #endif
 }
 
-static void
+static int
 glamor_pixmap_ensure_fb(glamor_pixmap_fbo *fbo)
 {
 	glamor_gl_dispatch *dispatch;
-	int status;
+	int status, err = 0;
 
 	dispatch = glamor_get_dispatch(fbo->glamor_priv);
 
 	if (fbo->fb == 0)
 		dispatch->glGenFramebuffers(1, &fbo->fb);
+
 	assert(fbo->tex != 0);
 	dispatch->glBindFramebuffer(GL_FRAMEBUFFER, fbo->fb);
 	dispatch->glFramebufferTexture2D(GL_FRAMEBUFFER,
@@ -211,11 +212,11 @@ glamor_pixmap_ensure_fb(glamor_pixmap_fbo *fbo)
 			str = "unknown error";
 			break;
 		}
-
-		FatalError("destination is framebuffer incomplete: %s [%x]\n",
-			   str, status);
+		glamor_fallback("glamor: Failed to create fbo, %s\n", str);
+		err = -1;
 	}
 	glamor_put_dispatch(fbo->glamor_priv);
+	return err;
 }
 
 glamor_pixmap_fbo *
@@ -244,8 +245,12 @@ glamor_create_fbo_from_tex(glamor_screen_private *glamor_priv,
 		goto done;
 	}
 
-	if (flag != GLAMOR_CREATE_FBO_NO_FBO)
-		glamor_pixmap_ensure_fb(fbo);
+	if (flag != GLAMOR_CREATE_FBO_NO_FBO) {
+		if (glamor_pixmap_ensure_fb(fbo) != 0) {
+			glamor_purge_fbo(fbo);
+			fbo = NULL;
+		}
+        }
 
 done:
 	return fbo;
@@ -570,7 +575,8 @@ glamor_pixmap_ensure_fbo(PixmapPtr pixmap, GLenum format, int flag)
 								   pixmap->drawable.height, format);
 
 		if (flag != GLAMOR_CREATE_FBO_NO_FBO && pixmap_priv->base.fbo->fb == 0)
-			glamor_pixmap_ensure_fb(pixmap_priv->base.fbo);
+			if (glamor_pixmap_ensure_fb(pixmap_priv->base.fbo) != 0)
+				return FALSE;
 	}
 
 	return TRUE;

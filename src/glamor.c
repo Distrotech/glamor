@@ -134,7 +134,7 @@ glamor_create_pixmap(ScreenPtr screen, int w, int h, int depth,
 	glamor_pixmap_private *pixmap_priv;
 	glamor_screen_private *glamor_priv =
 	    glamor_get_screen_private(screen);
-	glamor_pixmap_fbo *fbo;
+	glamor_pixmap_fbo *fbo = NULL;
 	int pitch;
 	GLenum format;
 
@@ -173,13 +173,13 @@ glamor_create_pixmap(ScreenPtr screen, int w, int h, int depth,
 	if (type == GLAMOR_MEMORY_MAP || glamor_check_fbo_size(glamor_priv, w, h)) {
 		pixmap_priv->type = type;
 		fbo = glamor_create_fbo(glamor_priv, w, h, format, usage);
-	}
-	else {
-		DEBUGF("Create LARGE pixmap %p width %d height %d\n", pixmap, w, h);
+	} else {
+	    int tile_size = glamor_priv->max_fbo_size;
+		DEBUGF("Create LARGE pixmap %p width %d height %d, tile size %d\n", pixmap, w, h, tile_size);
 		pixmap_priv->type = GLAMOR_TEXTURE_LARGE;
 		fbo = glamor_create_fbo_array(glamor_priv, w, h, format, usage,
-					      glamor_priv->max_fbo_size,
-					      glamor_priv->max_fbo_size,
+					      tile_size,
+					      tile_size,
 					      pixmap_priv);
 	}
 
@@ -589,7 +589,8 @@ glamor_dri3_fd_from_pixmap (ScreenPtr screen,
 	{
 		case GLAMOR_TEXTURE_DRM:
 		case GLAMOR_TEXTURE_ONLY:
-			glamor_pixmap_ensure_fbo(pixmap, GL_RGBA, 0);
+			if (!glamor_pixmap_ensure_fbo(pixmap, GL_RGBA, 0))
+				return -1;
 			return glamor_egl_dri3_fd_name_from_tex(screen,
 								pixmap,
 								pixmap_priv->base.fbo->tex,
@@ -615,7 +616,8 @@ glamor_dri3_name_from_pixmap (PixmapPtr pixmap)
 	{
 		case GLAMOR_TEXTURE_DRM:
 		case GLAMOR_TEXTURE_ONLY:
-			glamor_pixmap_ensure_fbo(pixmap, GL_RGBA, 0);
+			if (!glamor_pixmap_ensure_fbo(pixmap, GL_RGBA, 0))
+				return -1;
 			return glamor_egl_dri3_fd_name_from_tex(pixmap->drawable.pScreen,
 								pixmap,
 								pixmap_priv->base.fbo->tex,
