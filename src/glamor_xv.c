@@ -37,6 +37,7 @@
 #ifdef GLAMOR_XV
 #include "xf86xv.h"
 #include <X11/extensions/Xv.h>
+#include <xorg/damage.h>
 #include "fourcc.h"
 /* Reference color space transform data */
 typedef struct tagREF_TRANSFORM
