@@ -258,6 +258,7 @@ _glamor_put_image(DrawablePtr drawable, GCPtr gc, int depth, int x, int y,
 	PixmapPtr temp_pixmap, sub_pixmap;
 	glamor_pixmap_private *temp_pixmap_priv;
 	BoxRec box;
+	int stride;
 
 	glamor_get_drawable_deltas(drawable, pixmap, &x_off, &y_off);
 	clip = fbGetCompositeClip(gc);
@@ -281,6 +282,7 @@ _glamor_put_image(DrawablePtr drawable, GCPtr gc, int depth, int x, int y,
 	}
 	/* create a temporary pixmap and upload the bits to that
 	 * pixmap, then apply clip copy it to the destination pixmap.*/
+	stride = PixmapBytePad(w, depth);
 	box.x1 = x + drawable->x;
 	box.y1 = y + drawable->y;
 	box.x2 = x + w + drawable->x;
@@ -300,12 +302,12 @@ _glamor_put_image(DrawablePtr drawable, GCPtr gc, int depth, int x, int y,
 		}
 
 		glamor_upload_sub_pixmap_to_texture(temp_pixmap, 0, 0, w, h,
-	    		                            0, bits, 0);
+		                                    stride, bits, 0);
 		glamor_copy_area(&temp_pixmap->drawable, drawable, gc, 0, 0, w, h, x, y);
 		glamor_destroy_pixmap(temp_pixmap);
 	} else {
 		glamor_upload_sub_pixmap_to_texture(pixmap, x + drawable->x + x_off, y + drawable->y + y_off,
-	    		                            w, h, 0, bits, 0);
+		                                    w, h, stride, bits, 0);
 	}
 	ret = TRUE;
 	goto done;
