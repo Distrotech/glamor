@@ -588,9 +588,6 @@ glamor_set_composite_texture(glamor_screen_private *glamor_priv, int unit,
 					  GL_LINEAR);
 		break;
 	}
-#ifndef GLAMOR_GLES2
-	dispatch->glEnable(GL_TEXTURE_2D);
-#endif
 
 	/*
 	 *  GLES2 doesn't support RepeatNone. We need to fix it anyway.
@@ -1447,12 +1444,6 @@ glamor_composite_with_shader(CARD8 op,
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_MASK);
 	dispatch->glDisable(GL_BLEND);
-#ifndef GLAMOR_GLES2
-	dispatch->glActiveTexture(GL_TEXTURE0);
-	dispatch->glDisable(GL_TEXTURE_2D);
-	dispatch->glActiveTexture(GL_TEXTURE1);
-	dispatch->glDisable(GL_TEXTURE_2D);
-#endif
 	DEBUGF("finish rendering.\n");
 	dispatch->glUseProgram(0);
 	glamor_priv->state = RENDER_STATE;

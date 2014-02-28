@@ -555,9 +555,6 @@ ready_to_upload:
 				  GL_NEAREST);
 	dispatch->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
 				  GL_NEAREST);
-#ifndef GLAMOR_GLES2
-	dispatch->glEnable(GL_TEXTURE_2D);
-#endif
 	dispatch->glUseProgram(glamor_priv->finish_access_prog[no_alpha]);
 	dispatch->glUniform1i(glamor_priv->
 			      finish_access_revert[no_alpha],
@@ -567,9 +564,6 @@ ready_to_upload:
 
 	dispatch->glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-#ifndef GLAMOR_GLES2
-	dispatch->glDisable(GL_TEXTURE_2D);
-#endif
 	dispatch->glUseProgram(0);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);

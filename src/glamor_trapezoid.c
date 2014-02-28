@@ -956,12 +956,6 @@ TRAPEZOID_RESET_GL:
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_MASK);
 	dispatch->glDisable(GL_BLEND);
-#ifndef GLAMOR_GLES2
-	dispatch->glActiveTexture(GL_TEXTURE0);
-	dispatch->glDisable(GL_TEXTURE_2D);
-	dispatch->glActiveTexture(GL_TEXTURE1);
-	dispatch->glDisable(GL_TEXTURE_2D);
-#endif
 	dispatch->glUseProgram(0);
 
 TRAPEZOID_OUT:

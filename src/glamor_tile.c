@@ -150,9 +150,6 @@ _glamor_tile(PixmapPtr pixmap, PixmapPtr tile,
 				  GL_REPEAT);
 	dispatch->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
 				  GL_REPEAT);
-#ifndef GLAMOR_GLES2
-	dispatch->glEnable(GL_TEXTURE_2D);
-#endif
 	glamor_set_repeat_normalize_tcoords
 			(src_pixmap_priv, RepeatNormal,
 			 src_xscale, src_yscale,
@@ -179,9 +176,6 @@ _glamor_tile(PixmapPtr pixmap, PixmapPtr tile,
 	dispatch->glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
-#ifndef GLAMOR_GLES2
-		dispatch->glDisable(GL_TEXTURE_2D);
-#endif
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 	dispatch->glUseProgram(0);
 	glamor_put_dispatch(glamor_priv);
