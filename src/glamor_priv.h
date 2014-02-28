@@ -46,13 +46,16 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
-#define GLAMOR_DEFAULT_PRECISION   "precision mediump float;\n"
 #include "glamor_glext.h"
 #else
 #include <GL/gl.h>
 #include <GL/glext.h>
-#define GLAMOR_DEFAULT_PRECISION
 #endif
+
+#define GLAMOR_DEFAULT_PRECISION     \
+	"#ifdef GL_ES\n"	     \
+	"precision mediump float;\n" \
+	"#endif\n"
 
 #ifdef RENDER
 #include "glyphstr.h"
