@@ -751,7 +751,9 @@ glamor_setup_composite_vbo(ScreenPtr screen, int n_verts)
 		glamor_priv->vb = dispatch->glMapBufferRange(GL_ARRAY_BUFFER,
 							     glamor_priv->vbo_offset,
 							     vert_size,
-							     GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
+							     GL_MAP_WRITE_BIT |
+							     GL_MAP_UNSYNCHRONIZED_BIT |
+							     GL_MAP_INVALIDATE_RANGE_BIT);
 		assert(glamor_priv->vb != NULL);
 		glamor_priv->vb -= glamor_priv->vbo_offset;
 	} else
