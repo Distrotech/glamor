@@ -225,6 +225,8 @@ glamor_block_handler(ScreenPtr screen)
 	    glamor_get_screen_private(screen);
 	glamor_gl_dispatch *dispatch;
 
+	assert(!glamor_priv->ctx.get_count);
+
 	dispatch = glamor_get_dispatch(glamor_priv);
 	glamor_priv->tick++;
 	dispatch->glFlush();
@@ -242,7 +244,11 @@ _glamor_block_handler(void *data, OSTimePtr timeout,
 		      void *last_select_mask)
 {
 	glamor_screen_private *glamor_priv = data;
-	glamor_gl_dispatch *dispatch = glamor_get_dispatch(glamor_priv);
+	glamor_gl_dispatch *dispatch;
+
+	assert(!glamor_priv->ctx.get_count);
+
+	dispatch = glamor_get_dispatch(glamor_priv);
 	dispatch->glFlush();
 	glamor_put_dispatch(glamor_priv);
 }
