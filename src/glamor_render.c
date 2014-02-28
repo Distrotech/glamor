@@ -1330,15 +1330,14 @@ glamor_composite_with_shader(CARD8 op,
 		vert_stride += 4;
 	}
 
-	nrect_max = (vert_stride * nrect) > GLAMOR_COMPOSITE_VBO_VERT_CNT ?
-			 (GLAMOR_COMPOSITE_VBO_VERT_CNT / vert_stride) : nrect;
+	nrect_max = MIN(nrect, GLAMOR_COMPOSITE_VBO_VERT_CNT / 4);
 
 	while(nrect) {
 		int mrect, rect_processed;
 		int vb_stride;
 
 		mrect = nrect > nrect_max ? nrect_max : nrect ;
-		glamor_setup_composite_vbo(screen, mrect * vert_stride);
+		glamor_setup_composite_vbo(screen, mrect * 4);
 		rect_processed = mrect;
 		vb_stride = glamor_priv->vb_stride/sizeof(float);
 		while (mrect--) {
