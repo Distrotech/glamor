@@ -68,12 +68,6 @@ glamor_set_destination_pixmap_fbo(glamor_pixmap_fbo * fbo, int x0, int y0, int w
 {
 	glamor_gl_dispatch *dispatch = glamor_get_dispatch(fbo->glamor_priv);
 	dispatch->glBindFramebuffer(GL_FRAMEBUFFER, fbo->fb);
-#ifndef GLAMOR_GLES2
-	dispatch->glMatrixMode(GL_PROJECTION);
-	dispatch->glLoadIdentity();
-	dispatch->glMatrixMode(GL_MODELVIEW);
-	dispatch->glLoadIdentity();
-#endif
 	dispatch->glViewport(x0, y0,
 			     width, height);
 
