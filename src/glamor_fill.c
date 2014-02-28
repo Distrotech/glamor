@@ -235,7 +235,9 @@ _glamor_solid_boxes(PixmapPtr pixmap, BoxPtr box, int nbox, float *color)
 		}
 		glamor_put_vbo_space(screen);
 
-		if (box_cnt == 1)
+		if (glamor_priv->gl_flavor == GLAMOR_GL_DESKTOP)
+			dispatch->glDrawArrays(GL_QUADS, 0, box_cnt * 4);
+		else if (box_cnt == 1)
 			dispatch->glDrawArrays(GL_TRIANGLE_FAN, 0, box_cnt * 4);
 		else
 #ifndef GLAMOR_GLES2
