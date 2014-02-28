@@ -204,7 +204,7 @@ _glamor_solid_boxes(PixmapPtr pixmap, BoxPtr box, int nbox, float *color)
 
 	pixmap_priv_get_dest_scale(pixmap_priv, &xscale, &yscale);
 
-	if (unlikely(nbox*4*2 > ARRAY_SIZE(vertices))) {
+	if (nbox * 4 * 2 > ARRAY_SIZE(vertices)) {
 		int allocated_box;
 
 		if (nbox * 6 > GLAMOR_COMPOSITE_VBO_VERT_CNT) {
