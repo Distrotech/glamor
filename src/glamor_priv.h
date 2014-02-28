@@ -243,7 +243,7 @@ struct glamor_saved_procs {
 
 typedef struct glamor_screen_private {
 	struct glamor_gl_dispatch _dispatch;
-	int yInverted;
+	Bool yInverted;
 	unsigned int tick;
 	enum glamor_gl_flavor gl_flavor;
 	int has_pack_invert;
