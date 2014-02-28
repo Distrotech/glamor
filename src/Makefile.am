@@ -42,6 +42,7 @@ libglamor_la_SOURCES = \
 	glamor_pixmap.c\
 	glamor_largepixmap.c\
 	glamor_picture.c\
+	glamor_vbo.c \
 	glamor_window.c\
 	glamor_gl_dispatch.c\
 	glamor_fbo.c\

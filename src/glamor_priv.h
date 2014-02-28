@@ -250,6 +250,7 @@ typedef struct glamor_screen_private {
 	GLuint vbo, ebo;
 	Bool vbo_mapped;
 	int vbo_offset;
+	int composite_vbo_offset;
 	int vbo_size;
 	char *vb;
 	int vb_stride;
@@ -801,6 +802,15 @@ glamor_triangles(CARD8 op,
 
 void glamor_pixmap_init(ScreenPtr screen);
 void glamor_pixmap_fini(ScreenPtr screen);
+
+/* glamor_vbo.c */
+
+void *
+glamor_get_vbo_space(ScreenPtr screen, int size, char **vbo_offset);
+
+void
+glamor_put_vbo_space(ScreenPtr screen);
+
 /** 
  * Download a pixmap's texture to cpu memory. If success,
  * One copy of current pixmap's texture will be put into
