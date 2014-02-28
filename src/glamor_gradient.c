@@ -391,7 +391,7 @@ _glamor_create_radial_gradient_program(ScreenPtr screen, int stops_count, int dy
 	dispatch->glAttachShader(gradient_prog, fs_getcolor_prog);
 	dispatch->glAttachShader(gradient_prog, fs_main_prog);
 
-	dispatch->glBindAttribLocation(gradient_prog, GLAMOR_VERTEX_POS, "v_positionsition");
+	dispatch->glBindAttribLocation(gradient_prog, GLAMOR_VERTEX_POS, "v_position");
 	dispatch->glBindAttribLocation(gradient_prog, GLAMOR_VERTEX_SOURCE, "v_texcoord");
 
 	glamor_link_glsl_prog(dispatch, gradient_prog);
