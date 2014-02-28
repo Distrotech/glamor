@@ -55,6 +55,7 @@ glamor_get_vbo_space(ScreenPtr screen, int size, char **vbo_offset)
 							 GL_MAP_INVALIDATE_RANGE_BIT);
 	    assert(glamor_priv->vb != NULL);
 	    *vbo_offset = (void *)(uintptr_t)glamor_priv->vbo_offset;
+	    glamor_priv->vbo_offset += size;
 	    glamor_priv->vbo_mapped = TRUE;
 	} else {
 	    /* Return a pointer to the statically allocated non-VBO

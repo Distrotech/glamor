@@ -193,9 +193,6 @@ _glamor_solid_boxes(PixmapPtr pixmap, BoxPtr box, int nbox, float *color)
 	    glamor_get_pixmap_private(pixmap);
 	glamor_gl_dispatch *dispatch;
 	GLfloat xscale, yscale;
-	float stack_vertices[32];
-	float *vertices = stack_vertices;
-	int valid_nbox = ARRAY_SIZE(stack_vertices) / (4 * 2);
 
 	glamor_set_destination_pixmap_priv_nc(pixmap_priv);
 
@@ -207,35 +204,27 @@ _glamor_solid_boxes(PixmapPtr pixmap, BoxPtr box, int nbox, float *color)
 
 	pixmap_priv_get_dest_scale(pixmap_priv, &xscale, &yscale);
 
-	if (nbox > valid_nbox) {
-		int allocated_nbox;
-		float *new_vertices;
+	dispatch->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glamor_priv->ebo);
 
-		if (nbox > GLAMOR_COMPOSITE_VBO_VERT_CNT / 6)
-			allocated_nbox = GLAMOR_COMPOSITE_VBO_VERT_CNT / 6;
-		else
-			allocated_nbox = nbox;
-		new_vertices = malloc(allocated_nbox * 4 * 2 * sizeof(float));
-		if (new_vertices) {
-		    vertices = new_vertices;
-		    valid_nbox = allocated_nbox;
-		}
-	}
-
-	if (unlikely(nbox > 1))
-		dispatch->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glamor_priv->ebo);
-
-	dispatch->glVertexAttribPointer(GLAMOR_VERTEX_POS, 2, GL_FLOAT,
-					GL_FALSE, 2 * sizeof(float),
-					vertices);
 	dispatch->glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
 
 	while(nbox) {
-		int box_cnt, i;
+		/* We can only use a limited number of verts up to the size of
+		 * the precomputed index buffer.
+		 */
+		int index_buffer_box_count = GLAMOR_COMPOSITE_VBO_VERT_CNT / 6;
+		int box_cnt = MIN(index_buffer_box_count, nbox);
+		int i;
 		float *next_box;
+		char *vbo_offset;
 
-		next_box = vertices;
-		box_cnt = nbox > valid_nbox ? valid_nbox : nbox;
+		next_box = glamor_get_vbo_space(screen, box_cnt * 4 * 2 * sizeof(float),
+						&vbo_offset);
+
+		dispatch->glVertexAttribPointer(GLAMOR_VERTEX_POS, 2, GL_FLOAT,
+						GL_FALSE, 2 * sizeof(float),
+						vbo_offset);
+
 		for (i = 0; i < box_cnt; i++) {
 			glamor_set_normalize_vcoords(pixmap_priv, xscale, yscale,
 						     box[i].x1, box[i].y1,
@@ -244,6 +233,8 @@ _glamor_solid_boxes(PixmapPtr pixmap, BoxPtr box, int nbox, float *color)
 						     next_box);
 			next_box += 4 * 2;
 		}
+		glamor_put_vbo_space(screen);
+
 		if (box_cnt == 1)
 			dispatch->glDrawArrays(GL_TRIANGLE_FAN, 0, box_cnt * 4);
 		else
@@ -264,9 +255,7 @@ _glamor_solid_boxes(PixmapPtr pixmap, BoxPtr box, int nbox, float *color)
 		box += box_cnt;
 	}
 
-	if (vertices != stack_vertices)
-		free(vertices);
-
+	dispatch->glBindBuffer(GL_ARRAY_BUFFER, 0);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 	dispatch->glUseProgram(0);
 	glamor_put_dispatch(glamor_priv);
