@@ -354,18 +354,6 @@ _glamor_create_radial_gradient_program(ScreenPtr screen, int stops_count, int dy
 	dispatch = glamor_get_dispatch(glamor_priv);
 
 	if (dyn_gen && glamor_priv->gradient_prog[SHADER_GRADIENT_RADIAL][2]) {
-		dispatch->glDeleteShader(
-		    glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_VS_PROG][2]);
-		glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_VS_PROG][2] = 0;
-
-		dispatch->glDeleteShader(
-		    glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_FS_MAIN_PROG][2]);
-		glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_FS_MAIN_PROG][2] = 0;
-
-		dispatch->glDeleteShader(
-		    glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_FS_GETCOLOR_PROG][2]);
-		glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_FS_GETCOLOR_PROG][2] = 0;
-
 		dispatch->glDeleteProgram(glamor_priv->gradient_prog[SHADER_GRADIENT_RADIAL][2]);
 		glamor_priv->gradient_prog[SHADER_GRADIENT_RADIAL][2] = 0;
 	}
@@ -390,6 +378,9 @@ _glamor_create_radial_gradient_program(ScreenPtr screen, int stops_count, int dy
 	dispatch->glAttachShader(gradient_prog, vs_prog);
 	dispatch->glAttachShader(gradient_prog, fs_getcolor_prog);
 	dispatch->glAttachShader(gradient_prog, fs_main_prog);
+	dispatch->glDeleteShader(vs_prog);
+	dispatch->glDeleteShader(fs_getcolor_prog);
+	dispatch->glDeleteShader(fs_main_prog);
 
 	dispatch->glBindAttribLocation(gradient_prog, GLAMOR_VERTEX_POS, "v_position");
 	dispatch->glBindAttribLocation(gradient_prog, GLAMOR_VERTEX_SOURCE, "v_texcoord");
@@ -408,9 +399,6 @@ _glamor_create_radial_gradient_program(ScreenPtr screen, int stops_count, int dy
 	}
 
 	glamor_priv->gradient_prog[SHADER_GRADIENT_RADIAL][index] = gradient_prog;
-	glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_VS_PROG][index] = vs_prog;
-	glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_FS_MAIN_PROG][index] = fs_main_prog;
-	glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_FS_GETCOLOR_PROG][index] = fs_getcolor_prog;
 
 	glamor_put_dispatch(glamor_priv);
 }
@@ -578,18 +566,6 @@ _glamor_create_linear_gradient_program(ScreenPtr screen, int stops_count, int dy
 
 	dispatch = glamor_get_dispatch(glamor_priv);
 	if (dyn_gen && glamor_priv->gradient_prog[SHADER_GRADIENT_LINEAR][2]) {
-		dispatch->glDeleteShader(
-		    glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_VS_PROG][2]);
-		glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_VS_PROG][2] = 0;
-
-		dispatch->glDeleteShader(
-		    glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_FS_MAIN_PROG][2]);
-		glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_FS_MAIN_PROG][2] = 0;
-
-		dispatch->glDeleteShader(
-		    glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_FS_GETCOLOR_PROG][2]);
-		glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_FS_GETCOLOR_PROG][2] = 0;
-
 		dispatch->glDeleteProgram(glamor_priv->gradient_prog[SHADER_GRADIENT_LINEAR][2]);
 		glamor_priv->gradient_prog[SHADER_GRADIENT_LINEAR][2] = 0;
 	}
@@ -613,6 +589,9 @@ _glamor_create_linear_gradient_program(ScreenPtr screen, int stops_count, int dy
 	dispatch->glAttachShader(gradient_prog, vs_prog);
 	dispatch->glAttachShader(gradient_prog, fs_getcolor_prog);
 	dispatch->glAttachShader(gradient_prog, fs_main_prog);
+	dispatch->glDeleteShader(vs_prog);
+	dispatch->glDeleteShader(fs_getcolor_prog);
+	dispatch->glDeleteShader(fs_main_prog);
 
 	dispatch->glBindAttribLocation(gradient_prog, GLAMOR_VERTEX_POS, "v_position");
 	dispatch->glBindAttribLocation(gradient_prog, GLAMOR_VERTEX_SOURCE, "v_texcoord");
@@ -631,9 +610,6 @@ _glamor_create_linear_gradient_program(ScreenPtr screen, int stops_count, int dy
 	}
 
 	glamor_priv->gradient_prog[SHADER_GRADIENT_LINEAR][index] = gradient_prog;
-	glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_VS_PROG][index] = vs_prog;
-	glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_FS_MAIN_PROG][index] = fs_main_prog;
-	glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_FS_GETCOLOR_PROG][index] = fs_getcolor_prog;
 
 	glamor_put_dispatch(glamor_priv);
 }
@@ -648,14 +624,8 @@ glamor_init_gradient_shader(ScreenPtr screen)
 
 	for (i = 0; i < 3; i++) {
 		glamor_priv->gradient_prog[SHADER_GRADIENT_LINEAR][i] = 0;
-		glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_VS_PROG][i] = 0;
-		glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_FS_MAIN_PROG][i] = 0;
-		glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_FS_GETCOLOR_PROG][i] = 0;
 
 		glamor_priv->gradient_prog[SHADER_GRADIENT_RADIAL][i] = 0;
-		glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_VS_PROG][i] = 0;
-		glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_FS_MAIN_PROG][i] = 0;
-		glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_FS_GETCOLOR_PROG][i] = 0;
 	}
 	glamor_priv->linear_max_nstops = 0;
 	glamor_priv->radial_max_nstops = 0;
@@ -679,34 +649,10 @@ glamor_fini_gradient_shader(ScreenPtr screen)
 
 	for (i = 0; i < 3; i++) {
 		/* Linear Gradient */
-		if (glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_VS_PROG][i])
-			dispatch->glDeleteShader(
-			    glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_VS_PROG][i]);
-
-		if (glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_FS_MAIN_PROG][i])
-			dispatch->glDeleteShader(
-			    glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_FS_MAIN_PROG][i]);
-
-		if (glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_FS_GETCOLOR_PROG][i])
-			dispatch->glDeleteShader(
-			    glamor_priv->linear_gradient_shaders[SHADER_GRADIENT_FS_GETCOLOR_PROG][i]);
-
 		if (glamor_priv->gradient_prog[SHADER_GRADIENT_LINEAR][i])
 			dispatch->glDeleteProgram(glamor_priv->gradient_prog[SHADER_GRADIENT_LINEAR][i]);
 
 		/* Radial Gradient */
-		if (glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_VS_PROG][i])
-			dispatch->glDeleteShader(
-			    glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_VS_PROG][i]);
-
-		if (glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_FS_MAIN_PROG][i])
-			dispatch->glDeleteShader(
-			    glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_FS_MAIN_PROG][i]);
-
-		if (glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_FS_GETCOLOR_PROG][i])
-			dispatch->glDeleteShader(
-			    glamor_priv->radial_gradient_shaders[SHADER_GRADIENT_FS_GETCOLOR_PROG][i]);
-
 		if (glamor_priv->gradient_prog[SHADER_GRADIENT_RADIAL][i])
 			dispatch->glDeleteProgram(glamor_priv->gradient_prog[SHADER_GRADIENT_RADIAL][i]);
 	}
