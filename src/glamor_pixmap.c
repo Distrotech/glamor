@@ -400,7 +400,7 @@ __glamor_upload_pixmap_to_texture(PixmapPtr pixmap, unsigned int *tex,
 	if (*tex == 0) {
 		dispatch->glGenTextures(1, tex);
 		if (glamor_priv->gl_flavor == GLAMOR_GL_DESKTOP)
-			gl_iformat_for_depth(pixmap->drawable.depth, &iformat);
+			iformat = gl_iformat_for_pixmap(pixmap);
 		else
 			iformat = format;
 		non_sub = 1;
@@ -625,7 +625,7 @@ glamor_pixmap_upload_prepare(PixmapPtr pixmap, GLenum format, int no_alpha, int 
 		return 0;
 
 	if (glamor_priv->gl_flavor == GLAMOR_GL_DESKTOP)
-		gl_iformat_for_depth(pixmap->drawable.depth, &iformat);
+		iformat = gl_iformat_for_pixmap(pixmap);
 	else
 		iformat = format;
 

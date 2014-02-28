@@ -900,20 +900,18 @@ depth_for_type(GLenum type)
 	}
 }
 
-static inline void
-gl_iformat_for_depth(int depth, GLenum * format)
+static inline GLenum
+gl_iformat_for_pixmap(PixmapPtr pixmap)
 {
-	switch (depth) {
-#ifndef GLAMOR_GLES2
-	case 1:
-	case 8:
-		*format = GL_ALPHA;
-		break;
-#endif
-	default:
-		*format = GL_RGBA;
-		break;
-       }
+	glamor_screen_private *glamor_priv =
+	    glamor_get_screen_private(pixmap->drawable.pScreen);
+
+	if (glamor_priv->gl_flavor == GLAMOR_GL_DESKTOP &&
+	    (pixmap->drawable.depth == 1 || pixmap->drawable.depth == 8)) {
+	    return GL_ALPHA;
+	} else {
+	    return GL_RGBA;
+	}
 }
 
 static inline CARD32
@@ -1348,11 +1346,12 @@ glamor_get_rgba_from_pixel(CARD32 pixel,
 	return TRUE;
 }
 
-inline static Bool glamor_pict_format_is_compatible(PictFormatShort pict_format, int depth)
+inline static Bool
+glamor_pict_format_is_compatible(PictFormatShort pict_format, PixmapPtr pixmap)
 {
 	GLenum iformat;
 
-	gl_iformat_for_depth(depth, &iformat);
+	iformat = gl_iformat_for_pixmap(pixmap);
 	switch (iformat) {
 		case GL_RGBA:
 			return (pict_format == PICT_a8r8g8b8 || pict_format == PICT_x8r8g8b8);
