@@ -831,6 +831,9 @@ ready_to_upload:
 		return TRUE;
 	}
 
+	if (!GLAMOR_PIXMAP_PRIV_HAS_FBO(pixmap_priv))
+		return FALSE;
+
 	if (need_flip)
 		ptexcoords = texcoords;
 	else
