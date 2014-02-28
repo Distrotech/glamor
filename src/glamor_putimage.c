@@ -232,8 +232,8 @@ fail:
 	if (glamor_prepare_access(drawable, GLAMOR_ACCESS_RW)) {
 		fbPutImage(drawable, gc, 1, x, y, w, h, left_pad, XYBitmap,
 			   bits);
-		glamor_finish_access(drawable, GLAMOR_ACCESS_RW);
 	}
+	glamor_finish_access(drawable);
 }
 #endif
 
