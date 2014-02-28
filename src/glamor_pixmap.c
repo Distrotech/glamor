@@ -724,10 +724,11 @@ __glamor_upload_pixmap_to_texture(PixmapPtr pixmap, unsigned int *tex,
 	dispatch->glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
 
 	assert(pbo || bits != 0);
-	if (bits == NULL)
+	if (bits == NULL) {
 		dispatch->glBindBuffer(GL_PIXEL_UNPACK_BUFFER,
 				       pbo);
-
+		dispatch->glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
+	}
 	dispatch->glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / alignment);
 	if (non_sub)
 		dispatch->glTexImage2D(GL_TEXTURE_2D,
