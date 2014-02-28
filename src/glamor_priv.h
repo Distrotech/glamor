@@ -425,6 +425,12 @@ typedef struct glamor_pixmap_clipped_regions{
 typedef struct glamor_pixmap_private_base {
 	glamor_pixmap_type_t type;
 	enum glamor_fbo_state gl_fbo;
+	/**
+	 * If devPrivate.ptr is non-NULL (meaning we're within
+	 * glamor_prepare_access), determies whether we should re-upload
+	 * that data on glamor_finish_access().
+	 */
+	Bool mapped_for_write;
 	unsigned char is_picture:1;
 	unsigned char gl_tex:1;
 	glamor_pixmap_fbo *fbo;

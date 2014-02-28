@@ -107,6 +107,20 @@ Bool
 glamor_prepare_access(DrawablePtr drawable, glamor_access_t access)
 {
 	PixmapPtr pixmap = glamor_get_drawable_pixmap(drawable);
+	glamor_pixmap_private *pixmap_priv = glamor_get_pixmap_private(pixmap);
+
+	if (pixmap->devPrivate.ptr) {
+	    /* Already mapped, nothing needs to be done. Note that we
+	     * aren't allowing promotion from RO to RW, because it would
+	     * require re-mapping the PBO.
+	     */
+		assert(!GLAMOR_PIXMAP_PRIV_HAS_FBO(pixmap_priv) ||
+		       access == GLAMOR_ACCESS_RO ||
+		       pixmap_priv->base.mapped_for_write);
+		return TRUE;
+	}
+	pixmap_priv->base.mapped_for_write = (access == GLAMOR_ACCESS_RW);
+
 	return glamor_download_pixmap_to_cpu(pixmap, access);
 }
 
@@ -326,7 +340,11 @@ glamor_finish_access(DrawablePtr drawable, glamor_access_t access_mode)
 	if (!GLAMOR_PIXMAP_PRIV_HAS_FBO_DOWNLOADED(pixmap_priv))
 		return;
 
-	if (access_mode != GLAMOR_ACCESS_RO) {
+	/* If we are doing a series of unmaps from a nested map, we're done. */
+	if (!pixmap->devPrivate.ptr)
+	    return;
+
+	if (pixmap_priv->base.mapped_for_write) {
 		glamor_restore_pixmap_to_texture(pixmap);
 	}
 
