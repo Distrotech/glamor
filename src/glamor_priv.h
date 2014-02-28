@@ -248,6 +248,7 @@ typedef struct glamor_screen_private {
 
 	/* vertext/elment_index buffer object for render */
 	GLuint vbo, ebo;
+	Bool vbo_mapped;
 	int vbo_offset;
 	int vbo_size;
 	char *vb;

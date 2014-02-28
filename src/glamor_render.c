@@ -756,6 +756,7 @@ glamor_setup_composite_vbo(ScreenPtr screen, int n_verts)
 							     GL_MAP_INVALIDATE_RANGE_BIT);
 		assert(glamor_priv->vb != NULL);
 		glamor_priv->vb -= glamor_priv->vbo_offset;
+		glamor_priv->vbo_mapped = TRUE;
 	} else
 		glamor_priv->vbo_offset = 0;
 
@@ -830,9 +831,12 @@ glamor_flush_composite_rects(ScreenPtr screen)
 	glamor_gl_dispatch *dispatch;
 
 	dispatch = glamor_get_dispatch(glamor_priv);
-	if (glamor_priv->gl_flavor == GLAMOR_GL_DESKTOP)
+	if (glamor_priv->gl_flavor == GLAMOR_GL_DESKTOP) {
+	    if (glamor_priv->vbo_mapped) {
 		dispatch->glUnmapBuffer(GL_ARRAY_BUFFER);
-	else {
+		glamor_priv->vbo_mapped = FALSE;
+	    }
+	} else {
 
 		dispatch->glBindBuffer(GL_ARRAY_BUFFER, glamor_priv->vbo);
 		dispatch->glBufferData(GL_ARRAY_BUFFER,
