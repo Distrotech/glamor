@@ -1054,19 +1054,6 @@ glamor_get_tex_format_type_from_pictformat(PictFormatShort format,
 	return 0;
 }
 
-/* Currently, we use RGBA to represent all formats. */
-inline static int cache_format(GLenum format)
-{
-	switch (format) {
-	case GL_ALPHA:
-		return 1;
-	case GL_RGBA:
-		return 0;
-	default:
-		return -1;
-	}
-}
-
 #else
 #define IS_LITTLE_ENDIAN  (IMAGE_BYTE_ORDER == LSBFirst)
 
@@ -1235,6 +1222,8 @@ glamor_get_tex_format_type_from_pictformat(PictFormatShort format,
 	return 0;
 }
 
+#endif
+
 inline static int cache_format(GLenum format)
 {
 	switch (format) {
@@ -1248,9 +1237,6 @@ inline static int cache_format(GLenum format)
 		return -1;
 	}
 }
-
-#endif
-
 
 static inline int
 glamor_get_tex_format_type_from_pixmap(PixmapPtr pixmap,
