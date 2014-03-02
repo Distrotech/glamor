@@ -111,6 +111,8 @@ glamor_gl_dispatch_init_impl(struct glamor_gl_dispatch *dispatch,
 	INIT_FUNC(dispatch, glGetProgramiv, get_proc_address);
 	INIT_FUNC(dispatch, glGetProgramInfoLog, get_proc_address);
 	INIT_FUNC(dispatch, glGetUniformLocation, get_proc_address);
+	INIT_FUNC(dispatch, glGetError, get_proc_address);
+	INIT_FUNC(dispatch, glBufferStorage, get_proc_address);
 
 	return TRUE;
       fail:

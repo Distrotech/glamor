@@ -51,6 +51,7 @@ typedef struct glamor_gl_dispatch {
 	void (*glDisable) (GLenum cap);
 	void (*glBlendFunc) (GLenum sfactor, GLenum dfactor);
 	void (*glLogicOp) (GLenum opcode);
+	GLenum (*glGetError) ( void );
 
 	/* 1.3 */
 	void (*glActiveTexture) (GLenum texture);
@@ -120,6 +121,8 @@ typedef struct glamor_gl_dispatch {
 				     GLsizei * length, GLchar * infoLog);
 	GLint (*glGetUniformLocation) (GLuint program,
 				       const GLchar * name);
+	void (*glBufferStorage) (GLenum target, GLsizeiptr size,
+				 const void *data, GLbitfield flags);
 
 } glamor_gl_dispatch;
 
