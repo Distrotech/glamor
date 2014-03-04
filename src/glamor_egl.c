@@ -252,7 +252,9 @@ glamor_egl_create_argb8888_based_texture(ScreenPtr screen,
 	gbm_bo_destroy(bo);
 	if (image == EGL_NO_IMAGE_KHR)
 		return 0;
+	glamor_egl_make_current(screen);
 	glamor_create_texture_from_image(glamor_egl, image, &texture);
+	glamor_egl_restore_context(screen);
 	glamor_egl->egl_destroy_image_khr(glamor_egl->display, image);
 
 	return texture;
