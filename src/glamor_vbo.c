@@ -54,7 +54,7 @@ glamor_get_vbo_space(ScreenPtr screen, int size, char **vbo_offset)
 		    dispatch->glUnmapBuffer(GL_ARRAY_BUFFER);
 
 		if (size > glamor_priv->vbo_size) {
-		    glamor_priv->vbo_size = MAX(65536, size);
+		    glamor_priv->vbo_size = MAX(256 * 1024, size);
 
 		    /* We aren't allowed to resize glBufferStorage()
 		     * buffers, so we need to gen a new one.
