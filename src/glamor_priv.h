@@ -240,6 +240,7 @@ typedef struct glamor_screen_private {
 	enum glamor_gl_flavor gl_flavor;
 	int has_pack_invert;
 	int has_fbo_blit;
+	int has_buffer_storage;
 	int max_fbo_size;
 
 	struct xorg_list fbo_cache[CACHE_FORMAT_COUNT][CACHE_BUCKET_WCOUNT][CACHE_BUCKET_HCOUNT];
@@ -256,6 +257,7 @@ typedef struct glamor_screen_private {
 	int composite_vbo_offset;
 	int vbo_size;
 	char *vb;
+	char *vb_base;
 	int vb_stride;
 	Bool has_source_coords, has_mask_coords;
 	int render_nr_verts;
