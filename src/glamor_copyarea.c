@@ -276,7 +276,6 @@ glamor_copy_n_to_n_textured(DrawablePtr src,
 
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
-	dispatch->glUseProgram(0);
 	/* The source texture is bound to a fbo, we have to flush it here. */
 	glamor_put_dispatch(glamor_priv);
 	glamor_priv->state = RENDER_STATE;

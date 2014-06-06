@@ -1421,7 +1421,6 @@ glamor_composite_with_shader(CARD8 op,
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_MASK);
 	dispatch->glDisable(GL_BLEND);
 	DEBUGF("finish rendering.\n");
-	dispatch->glUseProgram(0);
 	glamor_priv->state = RENDER_STATE;
 	glamor_priv->render_idle_cnt = 0;
 	if (saved_source_format)

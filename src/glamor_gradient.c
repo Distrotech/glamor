@@ -367,8 +367,6 @@ _glamor_create_radial_gradient_program(ScreenPtr screen, int stops_count, int dy
 
 	glamor_link_glsl_prog(dispatch, gradient_prog);
 
-	dispatch->glUseProgram(0);
-
 	if (dyn_gen) {
 		index = 2;
 		glamor_priv->radial_max_nstops = stops_count;
@@ -557,8 +555,6 @@ _glamor_create_linear_gradient_program(ScreenPtr screen, int stops_count, int dy
 	dispatch->glBindAttribLocation(gradient_prog, GLAMOR_VERTEX_SOURCE, "v_texcoord");
 
 	glamor_link_glsl_prog(dispatch, gradient_prog);
-
-	dispatch->glUseProgram(0);
 
 	if (dyn_gen) {
 		index = 2;
@@ -1120,7 +1116,6 @@ glamor_generate_radial_gradient_picture(ScreenPtr screen,
 
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
-	dispatch->glUseProgram(0);
 
 	glamor_put_dispatch(glamor_priv);
 	return dst_picture;
@@ -1142,7 +1137,6 @@ GRADIENT_FAIL:
 
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
-	dispatch->glUseProgram(0);
 	glamor_put_dispatch(glamor_priv);
 	return NULL;
 }
@@ -1458,7 +1452,6 @@ glamor_generate_linear_gradient_picture(ScreenPtr screen,
 
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
-	dispatch->glUseProgram(0);
 
 	glamor_put_dispatch(glamor_priv);
 	return dst_picture;
@@ -1480,7 +1473,6 @@ GRADIENT_FAIL:
 
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
-	dispatch->glUseProgram(0);
 	glamor_put_dispatch(glamor_priv);
 	return NULL;
 }

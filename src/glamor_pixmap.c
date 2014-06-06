@@ -878,7 +878,6 @@ ready_to_upload:
 
 	dispatch->glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-	dispatch->glUseProgram(0);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
 	dispatch->glDeleteTextures(1, &tex);
@@ -1218,7 +1217,6 @@ glamor_es2_pixmap_read_prepare(PixmapPtr source, int x, int y, int w, int h, GLe
 
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
-	dispatch->glUseProgram(0);
 	glamor_put_dispatch(glamor_priv);
 	return temp_fbo;
 }

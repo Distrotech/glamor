@@ -293,7 +293,6 @@ glamor_init_finish_access_shaders(ScreenPtr screen)
 	dispatch->glUniform1i(sampler_uniform_location, 0);
 	dispatch->glUniform1i(glamor_priv->finish_access_revert[0], 0);
 	dispatch->glUniform1i(glamor_priv->finish_access_swap_rb[0], 0);
-	dispatch->glUseProgram(0);
 
 	glamor_priv->finish_access_revert[1] =
 	    dispatch->
@@ -311,7 +310,6 @@ glamor_init_finish_access_shaders(ScreenPtr screen)
 	dispatch->glUniform1i(glamor_priv->finish_access_revert[1], 0);
 	dispatch->glUniform1i(sampler_uniform_location, 0);
 	dispatch->glUniform1i(glamor_priv->finish_access_swap_rb[1], 0);
-	dispatch->glUseProgram(0);
 	glamor_put_dispatch(glamor_priv);
 }
 

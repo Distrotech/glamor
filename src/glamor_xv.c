@@ -440,7 +440,6 @@ dispatch->glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
 
-dispatch->glUseProgram(0);
 glamor_put_dispatch(glamor_priv);
 DamageDamageRegion(port_priv->pDraw, &port_priv->clip);
 }

@@ -158,7 +158,6 @@ glamor_poly_glyph_blt_pixels(DrawablePtr drawable, GCPtr gc,
 
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 	dispatch->glBindBuffer(GL_ARRAY_BUFFER, 0);
-	dispatch->glUseProgram(0);
 
 	glamor_put_dispatch(glamor_priv);
 
@@ -330,7 +329,6 @@ glamor_push_pixels_points(GCPtr gc, PixmapPtr bitmap,
 
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
 	dispatch->glBindBuffer(GL_ARRAY_BUFFER, 0);
-	dispatch->glUseProgram(0);
 
 	glamor_put_dispatch(glamor_priv);
 

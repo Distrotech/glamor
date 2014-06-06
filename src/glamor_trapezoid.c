@@ -930,7 +930,6 @@ TRAPEZOID_RESET_GL:
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_MASK);
 	dispatch->glDisable(GL_BLEND);
-	dispatch->glUseProgram(0);
 
 TRAPEZOID_OUT:
 	if (box) {
@@ -1312,8 +1311,6 @@ glamor_init_trapezoid_shader(ScreenPtr screen)
 
 	glamor_link_glsl_prog(dispatch, glamor_priv->trapezoid_prog);
 
-	dispatch->glUseProgram(0);
-
 	glamor_put_dispatch(glamor_priv);
 }
 
@@ -1524,7 +1521,6 @@ _glamor_generate_trapezoid_with_shader(ScreenPtr screen, PicturePtr picture,
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_TOP_BOTTOM);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_LEFT_PARAM);
 	dispatch->glDisableVertexAttribArray(GLAMOR_VERTEX_RIGHT_PARAM);
-	dispatch->glUseProgram(0);
 	glamor_put_dispatch(glamor_priv);
 	return TRUE;
 }
