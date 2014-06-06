@@ -1299,7 +1299,7 @@ glamor_init_trapezoid_shader(ScreenPtr screen)
 	dispatch->glAttachShader(glamor_priv->trapezoid_prog, fs_prog);
 
 	dispatch->glBindAttribLocation(glamor_priv->trapezoid_prog,
-	        GLAMOR_VERTEX_POS, "v_positionsition");
+	        GLAMOR_VERTEX_POS, "v_position");
 	dispatch->glBindAttribLocation(glamor_priv->trapezoid_prog,
 	        GLAMOR_VERTEX_SOURCE, "v_texcoord");
 	dispatch->glBindAttribLocation(glamor_priv->trapezoid_prog,
