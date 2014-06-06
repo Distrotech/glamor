@@ -558,6 +558,7 @@ static int glamor_xv_put_image(ScrnInfoPtr pScrn,
 	port_priv->h = height;
 	port_priv->pDraw = pDrawable;
 	glamor_display_textured_video(port_priv);
+	glamor_xv_stop_video(pScrn, port_priv, TRUE);
 	return Success;
 }
 
